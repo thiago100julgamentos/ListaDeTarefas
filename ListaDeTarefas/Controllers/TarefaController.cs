@@ -19,6 +19,10 @@ namespace ListaDeTarefas.Controllers
         [HttpPost("criarTarefa")]
         public IActionResult CriarTarefa(Tarefa tarefa)
         {
+            var logado = Request.Cookies["IdLogado"];
+            if (logado == null)
+                return Unauthorized("Faça login antes de criar tarefas");
+
             _context.Add(tarefa);
             _context.SaveChanges();
             return Created("", tarefa);
@@ -27,6 +31,10 @@ namespace ListaDeTarefas.Controllers
         [HttpPut("atualizar/{id}")]
         public IActionResult AtualizarTarefa(int id, Tarefa tarefa)
         {
+            var logado = Request.Cookies["IdLogado"];
+            if (logado == null)
+                return Unauthorized("Faça login antes de atualizar tarefas");
+
             var tarefaBanco = _context.ListaDeTarefas.Find(id);
             if (tarefaBanco == null)
             {
@@ -41,6 +49,10 @@ namespace ListaDeTarefas.Controllers
         [HttpGet("mostrarTarefa{idUsuario}")]
         public IActionResult MostrarTarefaUsuario(int idUsuario)
         {
+            var logado = Request.Cookies["IdLogado"];
+            if (logado == null)
+                return Unauthorized("Faça login antes de mostrar tarefas");
+
             var tarefas = _context.ListaDeTarefas.Where(t => t.IdUsuario == idUsuario).ToList();
             if (tarefas.Count == 0)
             {
@@ -52,6 +64,10 @@ namespace ListaDeTarefas.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeletarTarefa(int id)
         {
+            var logado = Request.Cookies["IdLogado"];
+            if (logado == null)
+                return Unauthorized("Faça login antes de deletar tarefas");
+
             var tarefa = _context.ListaDeTarefas.Find(id);
 
             if (tarefa == null)
