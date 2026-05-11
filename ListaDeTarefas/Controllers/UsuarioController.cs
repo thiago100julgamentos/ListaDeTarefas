@@ -25,6 +25,10 @@ namespace ListaDeTarefas.Controllers
     [HttpPut("atualizar/{id}")]
     public IActionResult AtualizarUsuario(int id, Usuario usuario)
         {
+            var logado = Request.Cookies["IdLogado"];
+            if (logado == null)
+                return Unauthorized("Faça login antes de atualizar seus dados");
+
             var usuarioBanco = _context.Usuarios.Find(id);
             if (usuarioBanco == null)
             {
@@ -48,6 +52,27 @@ namespace ListaDeTarefas.Controllers
             _context.SaveChanges();
 
             return Ok("Usuario deletado!");
+        }
+    [HttpPost("login")]
+    public IActionResult LoginUsuario(Usuario usuario)
+        {
+            var resultadoUsuario = _context.Usuarios.Where
+                (u => u.Email.Equals(usuario.Email) &&
+                u.Senha.Equals(usuario.Senha)).ToList();
+            if (resultadoUsuario.Count == 0)
+            {
+                return Unauthorized("Email ou senha inválidos");
+            }
+            HttpContext.Session.SetString("IdLogado", resultadoUsuario[0].Id.ToString());
+            Response.Cookies.Append("IdLogado", resultadoUsuario[0].Id.ToString());
+            return Ok("Login realizado com sucesso");
+        }
+    [HttpPost("logout")]
+    public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            Response.Cookies.Delete("IdLogado");
+            return Ok("Logout realizado");
         }
 
 
