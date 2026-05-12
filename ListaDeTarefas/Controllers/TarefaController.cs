@@ -23,6 +23,12 @@ namespace ListaDeTarefas.Controllers
             if (logado == null)
                 return Unauthorized("Faça login antes de criar tarefas");
 
+            var id = Request.Cookies["IdLogado"];
+            if ( id != null)
+            {
+                tarefa.IdUsuario = int.Parse(id);
+            }
+
             _context.Add(tarefa);
             _context.SaveChanges();
             return Created("", tarefa);
