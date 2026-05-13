@@ -55,16 +55,28 @@ namespace ListaDeTarefas.Controllers
         [HttpGet("mostrarTarefa{idUsuario}")]
         public IActionResult MostrarTarefaUsuario(int idUsuario)
         {
-            var logado = Request.Cookies["IdLogado"];
-            if (logado == null)
-                return Unauthorized("Faça login antes de mostrar tarefas");
-
-            var tarefas = _context.ListaDeTarefas.Where(t => t.IdUsuario == idUsuario).ToList();
-            if (tarefas.Count == 0)
+            var sessaoUsuario = HttpContext.Session.GetString("IdLogado");
+            if (sessaoUsuario == null)
             {
-                return NotFound("Usuário não encontrado");
+                return Unauthorized("Faça login antes");
             }
-            return Ok(tarefas);
+            var idLogado = Request.Cookies["IdLogado"];
+            if (idLogado != null)
+            {
+                var resultado = from u in _context.Usuarios
+                                join t in _context.ListaDeTarefas
+                                on u.Id equals t.IdUsuario
+                                where u.Id == int.Parse(idLogado)
+                                select new
+                                {
+                                    Usuario = u.Nome,
+                                    u.Email,
+                                    Tarefas = t.Descricao,
+                                    t.Status
+                                };
+                return Ok(resultado.ToList());
+            }
+            return Unauthorized("Faça login antes");
         }
 
         [HttpDelete("{id}")]
