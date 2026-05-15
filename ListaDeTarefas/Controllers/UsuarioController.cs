@@ -64,8 +64,14 @@ namespace ListaDeTarefas.Controllers
                 return Unauthorized("Email ou senha inválidos");
             }
             HttpContext.Session.SetString("IdLogado", resultadoUsuario[0].Id.ToString());
-            Response.Cookies.Append("IdLogado", resultadoUsuario[0].Id.ToString());
-            return Ok("Login realizado com sucesso");
+            Response.Cookies.Append("IdLogado", resultadoUsuario[0].Id.ToString(),
+               new CookieOptions
+               {
+                   HttpOnly = true,
+                   Secure = true,
+                   SameSite = SameSiteMode.None
+               });
+            return Ok(new { mensagem = resultadoUsuario[0].Nome, sucesso = true });
         }
     [HttpPost("logout")]
     public IActionResult Logout()
