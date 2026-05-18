@@ -3,6 +3,7 @@ using ListaDeTarefas.Models;
 using System.Diagnostics;
 using ListaDeTarefas.Data;
 using System.Reflection.Metadata.Ecma335;
+using Microsoft.EntityFrameworkCore;
 namespace ListaDeTarefas.Controllers
 {
     [ApiController]
@@ -15,15 +16,15 @@ namespace ListaDeTarefas.Controllers
         {
             _context = context;
         }
-    [HttpPost("cadastrar")]
-    public IActionResult CadastraUsuario(Usuario usuario)
+        [HttpPost("cadastrar")]
+        public IActionResult CadastraUsuario(Usuario usuario)
         {
             _context.Add(usuario);
             _context.SaveChanges();
             return Created("", usuario);
         }
-    [HttpPut("atualizar/{id}")]
-    public IActionResult AtualizarUsuario(int id, Usuario usuario)
+        [HttpPut("atualizar/{id}")]
+        public IActionResult AtualizarUsuario(int id, Usuario usuario)
         {
             var logado = Request.Cookies["IdLogado"];
             if (logado == null)
@@ -40,8 +41,8 @@ namespace ListaDeTarefas.Controllers
             _context.SaveChanges();
             return Ok("Atualizado!");
         }
-    [HttpDelete("{id}")]
-    public IActionResult DeletarUsuario(int id)
+        [HttpDelete("{id}")]
+        public IActionResult DeletarUsuario(int id)
         {
             var usuario = _context.Usuarios.Find(id);
 
@@ -53,8 +54,8 @@ namespace ListaDeTarefas.Controllers
 
             return Ok("Usuario deletado!");
         }
-    [HttpPost("login")]
-    public IActionResult LoginUsuario(Usuario usuario)
+        [HttpPost("login")]
+        public IActionResult LoginUsuario(Usuario usuario)
         {
             var resultadoUsuario = _context.Usuarios.Where
                 (u => u.Email.Equals(usuario.Email) &&
@@ -73,8 +74,8 @@ namespace ListaDeTarefas.Controllers
                });
             return Ok(new { mensagem = resultadoUsuario[0].Nome, sucesso = true });
         }
-    [HttpPost("logout")]
-    public IActionResult Logout()
+        [HttpPost("logout")]
+        public IActionResult Logout()
         {
             HttpContext.Session.Clear();
             Response.Cookies.Delete("IdLogado");
@@ -82,5 +83,17 @@ namespace ListaDeTarefas.Controllers
         }
 
 
+
+        [HttpGet("{id}")]
+        public IActionResult SocilitaUsuarioID(int id)
+        {
+            var usuario = _context.Usuarios.Find(id);
+
+            if (usuario == null)
+            {
+                return NotFound("Pessoa não encontrada");
+            }
+            return Ok(usuario);
+        }
     }
 }
