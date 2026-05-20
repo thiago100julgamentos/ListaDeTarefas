@@ -52,7 +52,7 @@ namespace ListaDeTarefas.Controllers
             return Ok("Atualizado");
         }
 
-        [HttpGet("mostrarTarefa{idUsuario}")]
+        [HttpGet("mostrarTarefa")]
         public IActionResult MostrarTarefaUsuario(int idUsuario)
         {
             var sessaoUsuario = HttpContext.Session.GetString("IdLogado");
@@ -79,7 +79,7 @@ namespace ListaDeTarefas.Controllers
             return Unauthorized("Faça login antes");
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("deletar")]
         public IActionResult DeletarTarefa(int id)
         {
             var logado = Request.Cookies["IdLogado"];

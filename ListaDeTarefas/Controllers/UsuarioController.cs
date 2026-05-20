@@ -84,7 +84,7 @@ namespace ListaDeTarefas.Controllers
 
 
 
-        [HttpGet("{id}")]
+        [HttpGet]
         public IActionResult SocilitaUsuarioID(int id)
         {
             var usuario = _context.Usuarios.Find(id);
