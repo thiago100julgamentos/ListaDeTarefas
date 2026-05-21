@@ -72,7 +72,12 @@ namespace ListaDeTarefas.Controllers
                    Secure = true,
                    SameSite = SameSiteMode.None
                });
-            return Ok(new { mensagem = resultadoUsuario[0].Nome, sucesso = true });
+            return Ok(new 
+            { 
+                mensagem = resultadoUsuario[0].Nome, 
+                sucesso = true,
+                usuarioId = resultadoUsuario[0].Id
+            });
         }
         [HttpPost("logout")]
         public IActionResult Logout()
@@ -84,7 +89,7 @@ namespace ListaDeTarefas.Controllers
 
 
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public IActionResult SocilitaUsuarioID(int id)
         {
             var usuario = _context.Usuarios.Find(id);

@@ -69,6 +69,7 @@ namespace ListaDeTarefas.Controllers
                                 where u.Id == int.Parse(idLogado)
                                 select new
                                 {
+                                    Id = t.Id,
                                     Usuario = u.Nome,
                                     u.Email,
                                     Tarefas = t.Descricao,
@@ -79,7 +80,7 @@ namespace ListaDeTarefas.Controllers
             return Unauthorized("Faça login antes");
         }
 
-        [HttpDelete("deletar")]
+        [HttpDelete("{id}")]
         public IActionResult DeletarTarefa(int id)
         {
             var logado = Request.Cookies["IdLogado"];
